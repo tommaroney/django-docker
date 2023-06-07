@@ -1,0 +1,31 @@
+services:
+  django_db:
+    image: postgres
+    volumes:
+      - django_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    networks:
+      - private
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    networks:
+      - private
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_HOSTNAME=django_db
+    depends_on:
+      - django_db
+networks:
+  private:
+volumes:
+  django_data:
